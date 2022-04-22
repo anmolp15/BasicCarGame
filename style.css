@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+body{
+    padding: 0;
+    margin: 0;
+    height: 100vh;
+    background-color: lightgreen;
+    font-family: 'Lato', sans-serif;
+}
+.main{
+    /* background-color: blueviolet; */
+    height: 100%;
+    width: 100%;
+}
+#scoreboard{
+    position: absolute;
+    /* height: 100px; */
+    line-height: 70px;
+    width: 300px;
+    top: 10px;
+    left: 10px;
+    background-color: darkgreen;
+    box-shadow: 2px 15px 10px 3px rgb(36, 35, 35);
+    text-align: center;
+    font-size: 2.5rem;
+    color: white;
+    border-radius: 10px;
+}
+.start-game{
+    padding: 20px;
+    position: absolute;
+    width: 550px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: darkgoldenrod;
+    text-align: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 2px 15px 10px 3px rgb(36, 35, 35);
+    border-radius: 10px;
+}
+#play-area{
+    height: 100%;
+    width: 500px;
+    background-color: rgb(73, 73, 73);
+    margin: auto;
+}
+.hide{
+    display: none;
+}
+
+.car{
+    z-index: 10;
+    position: absolute;
+    height: 150px;
+    width: 80px;
+    background-color: red;
+    transition: all 0.2s ease;
+}
+
+.line{
+    height: 100px;
+    width: 10px;
+    background-color: white;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
