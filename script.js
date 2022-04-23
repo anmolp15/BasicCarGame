@@ -96,11 +96,7 @@ function playGame() {
         scoreboard.innerHTML = `Score : ${score-1}`;
         window.requestAnimationFrame(playGame); // kind of recursion
         
-    }
-    else {
-        clearInterval(interval);
-    }
-    
+    }    
 }
 
 
@@ -182,7 +178,6 @@ function endGame() {
 
 // on clicking the start Game div, we will call startGame();
 startGameBtn.addEventListener('click', startGame);
-
 
 //set the speed of car and enemys based on selected level
 easy.addEventListener('click', () =>{
