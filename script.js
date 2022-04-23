@@ -124,8 +124,8 @@ function moveLines(){
     let lines = document.querySelectorAll('.line');
     lines.forEach((eachLine)=>{
         var y = eachLine.offsetTop;
-        if (y >= 650) {
-            y -= 680
+        if (y >= playArea.getBoundingClientRect().bottom - 100) {
+            y -= 800
         }
         eachLine.style.top = `${y + 5}px`; 
     });
@@ -140,8 +140,8 @@ function moveEnemyCars(){
         if(detectCollision(car, item)){
             endGame();
         }
-        if (y >= 600) {
-            y = -10500;
+        if (y >= playArea.getBoundingClientRect().bottom - 200) {
+            y = -15* playArea.getBoundingClientRect().bottom;
             item.style.left = `${370 * Math.random() + playArea.getBoundingClientRect().left + 50}px`;
             item.style.backgroundColor = `rgb(${randomColor()}, ${randomColor()}, ${randomColor()})`;
         }

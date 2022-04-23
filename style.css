@@ -62,6 +62,8 @@ body{
     width: 500px;
     background-color: rgb(73, 73, 73);
     margin: auto;
+    border-left: 5px dashed white;
+    border-right: 5px dashed white;
 }
 .hide{
     display: none;
