@@ -5,9 +5,12 @@ let startGameDiv = document.querySelector('#start-game');
 let startGameBtn = document.querySelector('.start-game');
 let playArea = document.querySelector('#play-area');
 let scoreboard = document.querySelector('#scoreboard');
-let speed = 50;
+let speed = 30;
+let elegibleToPlay = true;
 let enemyCarSpeed = 60;
 let score = 0;
+
+
 // this object will be used to move the car based on values which are true
 let keyPressedObj = {
     ArrowUp : false,
@@ -20,19 +23,29 @@ let keyPressedObj = {
 let acceptableKeys = ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'];
 
 
+let easy = document.getElementById('easy');
+let medium = document.getElementById('medium');
+let hard = document.getElementById('hard');
+let proMode = document.getElementById('pro-mode');
+
+
+
+
 // function defination area---------------------------------------------------
+
 
 // function to start the game, create the car element and call playGame()
 function startGame(){
     startGameDiv.classList.add('hide'); //hide the div as we click start Game
     playArea.innerHTML = ''; //clean up the playarea
+    score = 0;
+    elegibleToPlay = true;
     let car = document.createElement('div');
     car.classList.add('car');
     car.style.left = `${playArea.getBoundingClientRect().left + 5}px`;
     car.style.top = `${playArea.getBoundingClientRect().bottom - 60 - 150}px`;
     playArea.appendChild(car);
     playGame(car);
-    var interval = updateScore();
     // scoreboard.addEventListener('click',()=>{
     //     clearInterval(interval);
     // });
@@ -57,45 +70,43 @@ function startGame(){
     window.requestAnimationFrame(playGame);
 }
 
-function updateScore(){
-    var interval = setInterval(() => {
-        score++;
-        scoreboard.innerHTML = `Score : ${score}`;
-    }, 100);
-    return interval;
-}
-
-function randomColor(){
-    return Math.floor(Math.random() * 255);
-}
 
 // takes the car div as argument and passes it to the moveCar() function
 function playGame() {
     //on press of arrow keys only, change the property of keyPressedObj and set it back to false on key release
-    let car = document.querySelector('.car');
-    document.addEventListener('keydown', function(e){
-        let pressedkey = e.key
-        if (acceptableKeys.includes(e.key)) {
-            keyPressedObj[pressedkey] = true;
-        }
-        // console.log(keyPressedObj)
-        //move the car on the basis of pressed key
-        moveCar(car);
-    });
-    document.addEventListener('keyup', function(e){
-        let pressedkey = e.key
-        if (acceptableKeys.includes(e.key)) {
-            keyPressedObj[pressedkey] = false;
-        }
-    });
-
-    window.requestAnimationFrame(playGame);
-    moveLines();
-    moveEnemyCars();
+    if (elegibleToPlay) {
+        document.addEventListener('keydown', function(e){
+            let pressedkey = e.key
+            if (acceptableKeys.includes(e.key)) {
+                keyPressedObj[pressedkey] = true;
+            }
+            
+            
+        });
+        document.addEventListener('keyup', function(e){
+            let pressedkey = e.key
+            if (acceptableKeys.includes(e.key)) {
+                keyPressedObj[pressedkey] = false;
+            }
+        });
+        moveCar(); 
+        moveLines(); 
+        moveEnemyCars();
+        score++;
+        scoreboard.innerHTML = `Score : ${score-1}`;
+        window.requestAnimationFrame(playGame); // kind of recursion
+        
+    }
+    else {
+        clearInterval(interval);
+    }
+    
 }
 
+
 // takes the car div as argumengt and moves the car within the playArea
-function moveCar(car){
+function moveCar(){
+    let car = document.querySelector('.car');
     let carTop = car.offsetTop;
     let carLeft = car.offsetLeft;
     if (keyPressedObj.ArrowDown && (playArea.getBoundingClientRect().bottom - 160 - carTop - speed) >= 60) {
@@ -112,6 +123,7 @@ function moveCar(car){
     }
 }
 
+
 function moveLines(){
     let lines = document.querySelectorAll('.line');
     lines.forEach((eachLine)=>{
@@ -123,13 +135,17 @@ function moveLines(){
     });
 }
 
+
 function moveEnemyCars(){
     let eCars = document.querySelectorAll('.enemy');
+    let car = document.querySelector('.car');
     eCars.forEach((item)=>{
-        var y = item.getBoundingClientRect().top;//cannot use this here
+        var y = item.getBoundingClientRect().top;
+        if(detectCollision(car, item)){
+            endGame();
+        }
         if (y >= 600) {
             y = -10500;
-            // item.style.top = `-1000px`;
             item.style.left = `${370 * Math.random() + playArea.getBoundingClientRect().left + 50}px`;
             item.style.backgroundColor = `rgb(${randomColor()}, ${randomColor()}, ${randomColor()})`;
         }
@@ -138,7 +154,57 @@ function moveEnemyCars(){
 }
 
 
+function detectCollision(car, enemy){
+    let cBB = car.getBoundingClientRect();
+    let eBB = enemy.getBoundingClientRect();
+    return (cBB.top < eBB.bottom && cBB.right > eBB.left && cBB.left < eBB.right && cBB.bottom > eBB.top);
+}
+
+
+function randomColor(){
+    return Math.floor(Math.random() * 255);
+}
+
+
+function endGame() {
+    elegibleToPlay = false;
+    console.log('Hit');
+    startGameDiv.classList.remove('hide');
+    document.getElementById('game-over').innerHTML = "Game Over!";
+    document.getElementById('display-final-score').innerHTML = `Your Final Score is : ${score}`;
+    startGameBtn.innerHTML = "Click here to Restart the Game!";
+}
+
+
+
 // event handling area---------------------------------------------------
+
+
 // on clicking the start Game div, we will call startGame();
 startGameBtn.addEventListener('click', startGame);
 
+
+//set the speed of car and enemys based on selected level
+easy.addEventListener('click', () =>{
+    easy.style.backgroundColor = 'green';
+    speed = 30;
+    enemyCarSpeed = 60;
+});
+
+medium.addEventListener('click', () =>{
+    medium.style.backgroundColor = 'green';
+    speed = 50;
+    enemyCarSpeed = 100;
+});
+
+hard.addEventListener('click', () =>{
+    medium.style.backgroundColor = 'green';
+    speed = 80;
+    enemyCarSpeed = 160;
+});
+
+proMode.addEventListener('click', () =>{
+    easy.style.backgroundColor = 'green';
+    speed = 100;
+    enemyCarSpeed = 250;
+});
